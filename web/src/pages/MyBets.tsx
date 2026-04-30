@@ -70,7 +70,7 @@ export default function MyBets() {
     const market = marketsData?.[index]?.result as any;
     const stakeA = userStakesData?.[index * 2]?.result as bigint || 0n;
     const stakeB = userStakesData?.[index * 2 + 1]?.result as bigint || 0n;
-    const hasClaimed = claimedData?.[index]?.result as boolean || false;
+    const hasClaimed = Boolean(claimedData?.[index]?.result);
 
     if (stakeA === 0n && stakeB === 0n) return null;
 

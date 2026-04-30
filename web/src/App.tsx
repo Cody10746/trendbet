@@ -1,8 +1,8 @@
 import { WagmiProvider, useAccount, useConnect, useDisconnect } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { config } from './config';
-import { useState, useEffect } from 'react';
-import { TrendingUp, Wallet, Trophy, Clock, Search } from 'lucide-react';
+import { useState } from 'react';
+import { TrendingUp, Wallet } from 'lucide-react';
 import './index.css';
 
 // Pages

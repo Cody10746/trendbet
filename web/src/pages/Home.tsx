@@ -22,7 +22,7 @@ export default function Home() {
     }
   }, [marketCount]);
 
-  const { data: marketsData, isLoading: isMarketsLoading, error: marketsError } = useReadContracts({
+  const { data: marketsData, isLoading: isMarketsLoading } = useReadContracts({
     contracts: marketIds.map((id) => ({
       address: TRENDBET_ADDRESS,
       abi: TRENDBET_ABI,
