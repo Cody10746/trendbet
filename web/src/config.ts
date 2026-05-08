@@ -3,12 +3,12 @@ import { baseSepolia, hardhat } from 'wagmi/chains';
 import { coinbaseWallet, injected } from 'wagmi/connectors';
 
 export const config = createConfig({
-  chains: [hardhat, baseSepolia],
+  chains: [baseSepolia, hardhat],
   connectors: [
     injected(),
     coinbaseWallet({
       appName: 'TrendBet',
-      preference: 'smartWalletOnly',
+      preference: 'all',
     }),
   ],
   transports: {

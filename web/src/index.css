@@ -132,6 +132,21 @@ header {
   background: var(--primary-hover);
 }
 
+.btn-wallet {
+  background: var(--primary) !important;
+  color: white !important;
+  border-radius: 12px !important;
+  padding: 8px 16px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  transition: all 0.2s !important;
+  height: 40px !important;
+}
+
+.btn-wallet:hover {
+  background: var(--primary-hover) !important;
+}
+
 .btn-outline {
   background: transparent;
   border: 1px solid var(--border);
