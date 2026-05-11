@@ -218,3 +218,144 @@ header {
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out forwards;
 }
+
+/* Admin Styles */
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.card-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.text-trends { color: var(--accent-red); }
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+input {
+  background: var(--bg-color);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.fee-display {
+  background: var(--bg-color);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.fee-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.fee-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--accent-green);
+}
+
+.resolution-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resolution-item {
+  background: var(--bg-color);
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resolution-info h3 {
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+.resolution-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 0;
+  color: var(--text-secondary);
+}
+
+.mt-6 { margin-top: 24px; }
+.w-full { width: 100%; }

@@ -1,4 +1,4 @@
-export const TRENDBET_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3" as `0x${string}`;
+export const TRENDBET_ADDRESS = "0xAaE1ab8cbc69565917f192C823e409A7dc28F18d" as `0x${string}`;
 
 export const TRENDBET_ABI = [
   {

@@ -1,0 +1,49 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-106d001aa3ea71537d4453bcbc85b15faef3e575",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "compilerType": "solc",
+  "toolVersions": {
+    "hardhat": "3.4.2"
+  },
+  "userSourceNameMap": {
+    "contracts/TrendBet.sol": "project/contracts/TrendBet.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode.linkReferences",
+            "evm.bytecode.object",
+            "evm.bytecode.opcodes",
+            "evm.bytecode.sourceMap",
+            "evm.deployedBytecode.immutableReferences",
+            "evm.deployedBytecode.linkReferences",
+            "evm.deployedBytecode.object",
+            "evm.deployedBytecode.opcodes",
+            "evm.deployedBytecode.sourceMap",
+            "evm.methodIdentifiers"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/TrendBet.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\n/**\n * @title TrendBet\n * @dev A lightweight prediction market contract where users pick outcomes and winners split the pool.\n */\ncontract TrendBet {\n    struct Market {\n        string question;\n        string optionA;\n        string optionB;\n        uint256 deadline;\n        uint256 totalPool;\n        uint256 totalA;\n        uint256 totalB;\n        bool resolved;\n        uint8 winningOption; // 1 for A, 2 for B\n    }\n\n    address public owner;\n    uint256 public protocolFeePercent = 2;\n    uint256 public totalProtocolFees;\n    uint256 public marketCount;\n\n    mapping(uint256 => Market) public markets;\n    // marketId => user => option => amount\n    mapping(uint256 => mapping(address => mapping(uint8 => uint256))) public userStakes;\n    // marketId => user => claimed\n    mapping(uint256 => mapping(address => bool)) public hasClaimed;\n\n    event MarketCreated(uint256 indexed marketId, string question, uint256 deadline);\n    event Staked(uint256 indexed marketId, address indexed user, uint8 option, uint256 amount);\n    event MarketResolved(uint256 indexed marketId, uint8 winningOption);\n    event WinningsClaimed(uint256 indexed marketId, address indexed user, uint256 amount);\n\n    modifier onlyOwner() {\n        require(msg.sender == owner, \"Only owner can call this\");\n        _;\n    }\n\n    constructor() {\n        owner = msg.sender;\n    }\n\n    function createMarket(\n        string memory _question,\n        string memory _optionA,\n        string memory _optionB,\n        uint256 _deadline\n    ) external onlyOwner {\n        require(_deadline > block.timestamp, \"Deadline must be in the future\");\n        \n        marketCount++;\n        markets[marketCount] = Market({\n            question: _question,\n            optionA: _optionA,\n            optionB: _optionB,\n            deadline: _deadline,\n            totalPool: 0,\n            totalA: 0,\n            totalB: 0,\n            resolved: false,\n            winningOption: 0\n        });\n\n        emit MarketCreated(marketCount, _question, _deadline);\n    }\n\n    function stake(uint256 _marketId, uint8 _option) external payable {\n        Market storage market = markets[_marketId];\n        require(!market.resolved, \"Market already resolved\");\n        require(block.timestamp < market.deadline, \"Market deadline passed\");\n        require(msg.value >= 0.001 ether, \"Minimum stake is 0.001 ETH\");\n        require(_option == 1 || _option == 2, \"Invalid option (1 or 2)\");\n\n        userStakes[_marketId][msg.sender][_option] += msg.value;\n        market.totalPool += msg.value;\n\n        if (_option == 1) {\n            market.totalA += msg.value;\n        } else {\n            market.totalB += msg.value;\n        }\n\n        emit Staked(_marketId, msg.sender, _option, msg.value);\n    }\n\n    function resolveMarket(uint256 _marketId, uint8 _winningOption) external onlyOwner {\n        Market storage market = markets[_marketId];\n        require(!market.resolved, \"Market already resolved\");\n        require(block.timestamp >= market.deadline, \"Deadline not reached\");\n        require(_winningOption == 1 || _winningOption == 2, \"Invalid winning option\");\n\n        market.resolved = true;\n        market.winningOption = _winningOption;\n\n        // Calculate protocol fee\n        uint256 fee = (market.totalPool * protocolFeePercent) / 100;\n        totalProtocolFees += fee;\n\n        emit MarketResolved(_marketId, _winningOption);\n    }\n\n    function claimWinnings(uint256 _marketId) external {\n        Market storage market = markets[_marketId];\n        require(market.resolved, \"Market not resolved\");\n        require(!hasClaimed[_marketId][msg.sender], \"Winnings already claimed\");\n\n        uint8 winner = market.winningOption;\n        uint256 userStake = userStakes[_marketId][msg.sender][winner];\n        require(userStake > 0, \"No winning stake\");\n\n        uint256 totalWinningStakes = (winner == 1) ? market.totalA : market.totalB;\n        \n        // Winnings = (UserStake / TotalWinningStakes) * (TotalPool - ProtocolFee)\n        uint256 poolAfterFee = market.totalPool - (market.totalPool * protocolFeePercent / 100);\n        uint256 payout = (userStake * poolAfterFee) / totalWinningStakes;\n\n        hasClaimed[_marketId][msg.sender] = true;\n        \n        (bool success, ) = payable(msg.sender).call{value: payout}(\"\");\n        require(success, \"Transfer failed\");\n\n        emit WinningsClaimed(_marketId, msg.sender, payout);\n    }\n\n    function withdrawFees() external onlyOwner {\n        uint256 amount = totalProtocolFees;\n        totalProtocolFees = 0;\n        (bool success, ) = payable(owner).call{value: amount}(\"\");\n        require(success, \"Transfer failed\");\n    }\n\n    // Function to receive ETH\n    receive() external payable {}\n}\n"
+      }
+    }
+  }
+}
